@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Publish image
+      uses: machine-learning-apps/gpr-docker-publish@master
+      id: docker
+      with:
+        USERNAME: ${{ secrets.DOCKER_USER }}
+        PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+        IMAGE_NAME: 'demo-arla'
+        DOCKERFILE_PATH: 'Dockerfile'
+        BUILD_CONTEXT: '.'
+    - name: Show outputs of pervious step
+      run: |
+        echo "The name:tag of the Docker Image is: $VAR1"
+        echo "The docker image is hosted at $VAR2"
+      env:
+        VAR1: ${{ steps.docker.outputs.IMAGE_SHA_NAME }}
+        VAR2: ${{ steps.docker.outputs.IMAGE_URL }}
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_TOKEN }}
+          docker stop $(docker ps -q) || true
+          docker rm $(docker ps -aq) || true
+          docker pull ${{ steps.docker.outputs.IMAGE_SHA_NAME }}
+          docker run -d -p 80:80 ${{ steps.docker.outputs.IMAGE_SHA_NAME }}
+          
