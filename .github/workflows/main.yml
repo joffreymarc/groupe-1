@@ -16,7 +16,7 @@ jobs:
       with:
         USERNAME: ${{ secrets.DOCKER_USER }}
         PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-        IMAGE_NAME: 'demo-arla'
+        IMAGE_NAME: 'harla-davidson'
         DOCKERFILE_PATH: 'Dockerfile'
         BUILD_CONTEXT: '.'
     - name: Show outputs of pervious step
