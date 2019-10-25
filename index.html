@@ -2,8 +2,23 @@
 <html>
   <head>
     <title>ARLA groupe 1</title>
+	<script src="https://cdn.auth0.com/js/auth0-spa-js/1.2/auth0-spa-js.production.js"></script>
+	<script src="public/js/app.js"></script>
   </head>
   <body>
     <h1>Hello we are HARLA DAVIDSON </h1>
+	<div style="visibility: hidden;" id="premium-content">
+    <pre id="premium-user-profile"></pre>
+    <button id="btn-logout" onclick="logout()">
+        Se déconnecter
+    </button>
+	</div>
+	<div style="visibility: visible;" id="free-content">
+      <h2>Devenez premium aujourd'hui !</h2>
+      Déja Membre? 
+      <button id="btn-login" disabled="false" onclick="login()">
+        Connexion
+      </button>
+	</div>
   </body>
 </html>
